@@ -19,16 +19,19 @@ if os.path.exists('sim_crawling.log') is False:
 file_handler = logging.FileHandler('sim_crawling.log')
 file_handler.setLevel(logging.INFO)
 
+
 #create formatter to handler
 stdout_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
 file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 stdout_handler.setFormatter(stdout_formatter)
 file_handler.setFormatter(file_formatter)
 
+
 #set level and add handler for logger
 logger.setLevel(logging.DEBUG)
 logger.addHandler(stdout_handler)
 logger.addHandler(file_handler)
+
 
 def crawl_data(client_file):
     with open(client_file) as f:
