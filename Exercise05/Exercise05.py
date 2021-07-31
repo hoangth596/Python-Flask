@@ -31,6 +31,7 @@ class Customer(Base):
             'PostalCode':self.PostalCode,
             'Country': self.Country
         }
+        
         return data
 
 
@@ -61,7 +62,7 @@ Base.metadata.create_all(engine)
 
 app = Flask(__name__)
 
-@app.route("/customer/create", methods = ['POST'])
+@app.route("/customer/create", methods=['POST'])
 def create_customer():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -72,10 +73,11 @@ def create_customer():
         'success': True
     }
     session.commit()
+    
     return jsonify(output)
 
 
-@app.route("/customer/update", methods = ['PUT'])
+@app.route("/customer/update", methods=['PUT'])
 def update_customer():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -84,32 +86,34 @@ def update_customer():
 
     result = session.query(Customer)
     for key, value in param.items():
-        result = result.filter(getattr(Customer, key)==value)
+        result = result.filter(getattr(Customer, key) == value)
     result.update(data)
     session.commit()
     output = {
         'success': True
     }
+
     return jsonify(output)
 
 
-@app.route("/customer/get", methods = ['GET'])
+@app.route("/customer/get", methods=['GET'])
 def get_customer():
     Session = sessionmaker(bind=engine)
     session = Session()
     param = request.args
     result = session.query(Customer)
     for key, value in param.items():
-        result = result.filter(getattr(Customer, key)==value)
+        result = result.filter(getattr(Customer, key) == value)
     results = [i.__repr__() for i in result]
     
     data = {
         'data': results
     }
+
     return jsonify(data)
 
 
-@app.route("/customer/delete", methods = ["POST"])
+@app.route("/customer/delete", methods=["POST"])
 def delete_customer():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -117,16 +121,17 @@ def delete_customer():
 
     result = session.query(Customer)
     for key, value in param.items():
-        result = result.filter(getattr(Customer, key)==value)
+        result = result.filter(getattr(Customer, key) == value)
     result.delete()
     session.commit()
     output = {
         'success': True
     }
+
     return jsonify(output)
 
 
-@app.route("/employee/create", methods = ['POST'])
+@app.route("/employee/create", methods=['POST'])
 def create_employee():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -137,10 +142,11 @@ def create_employee():
         'success': True
     }
     session.commit()
+
     return jsonify(output)
 
 
-@app.route("/employee/update", methods = ['PUT'])
+@app.route("/employee/update", methods=['PUT'])
 def update_employee():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -149,32 +155,34 @@ def update_employee():
 
     result = session.query(Employee)
     for key, value in param.items():
-        result = result.filter(getattr(Employee, key)==value)
+        result = result.filter(getattr(Employee, key) == value)
     result.update(data)
     session.commit()
     output = {
         'success': True
     }
+
     return jsonify(output)
 
 
-@app.route("/employee/get", methods = ['GET'])
+@app.route("/employee/get", methods=['GET'])
 def get_employee():
     Session = sessionmaker(bind=engine)
     session = Session()
     param = request.args
     result = session.query(Employee)
     for key, value in param.items():
-        result = result.filter(getattr(Employee, key)==value)
+        result = result.filter(getattr(Employee, key) == value)
     results = [i.__repr__() for i in result]
     
     data = {
         'data': results
     }
+
     return jsonify(data)
 
 
-@app.route("/employee/delete", methods = ["POST"])
+@app.route("/employee/delete", methods=["POST"])
 def delete_employee():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -182,12 +190,13 @@ def delete_employee():
 
     result = session.query(Employee)
     for key, value in param.items():
-        result = result.filter(getattr(Employee, key)==value)
+        result = result.filter(getattr(Employee, key) == value)
     result.delete()
     session.commit()
     output = {
         'success': True
     }
+
     return jsonify(output)
 
 
