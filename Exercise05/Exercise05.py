@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String
 from flask import Flask, request, jsonify
+from sqlalchemy.sql.sqltypes import DateTime
 
 
 engine = create_engine('sqlite:///test.db', echo=True)
@@ -15,7 +16,7 @@ class Customer(Base):
     id = Column(Integer, primary_key=True)
     CustomerName = Column(String(50))
     ContactName = Column(String(50))
-    Address = Column(String(100))
+    Address = Column(String(200))
     City = Column(String(100))
     PostalCode = Column(String(50))
     Country = Column(String(50))
@@ -39,20 +40,20 @@ class Employee(Base):
     __tablename__ = 'Employee'
 
     id = Column(Integer, primary_key=True)
-    last_name = Column(String(50))
-    first_name = Column(String(50))
-    birth_date = Column(String(100))
-    photo = Column(String(100))
-    notes = Column(String(50))
+    LastName = Column(String(50))
+    FirstName = Column(String(50))
+    BirthDate = Column(String(50))
+    Photo = Column(String(50))
+    Notes = Column(String(200))
 
     def __repr__(self):
         data = {
             'id': self.id,
-            'LastName': self.last_name,
-            'FirstName': self.first_name,
-            'BirthDate': self.birth_date,
-            'Photo': self.photo,
-            'Notes':self.notes
+            'LastName': self.LastName,
+            'FirstName': self.FirstName,
+            'BirthDate': self.BirthDate,
+            'Photo': self.Photo,
+            'Notes':self.Notes
         }
 
         return data
@@ -61,6 +62,7 @@ class Employee(Base):
 Base.metadata.create_all(engine)
 
 app = Flask(__name__)
+
 
 @app.route("/customer/create", methods=['POST'])
 def create_customer():
@@ -75,6 +77,23 @@ def create_customer():
     session.commit()
     
     return jsonify(output)
+
+
+@app.route("/customer/get", methods=['GET'])
+def get_customer():
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    param = request.args
+    result = session.query(Customer)
+    for key, value in param.items():
+        result = result.filter(getattr(Customer, key) == value)
+    results = [i.__repr__() for i in result]
+    
+    data = {
+        'data': results
+    }
+
+    return jsonify(data)
 
 
 @app.route("/customer/update", methods=['PUT'])
@@ -96,24 +115,7 @@ def update_customer():
     return jsonify(output)
 
 
-@app.route("/customer/get", methods=['GET'])
-def get_customer():
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    param = request.args
-    result = session.query(Customer)
-    for key, value in param.items():
-        result = result.filter(getattr(Customer, key) == value)
-    results = [i.__repr__() for i in result]
-    
-    data = {
-        'data': results
-    }
-
-    return jsonify(data)
-
-
-@app.route("/customer/delete", methods=["POST"])
+@app.route("/customer/delete", methods=['DELETE'])
 def delete_customer():
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -131,6 +133,8 @@ def delete_customer():
     return jsonify(output)
 
 
+
+
 @app.route("/employee/create", methods=['POST'])
 def create_employee():
     Session = sessionmaker(bind=engine)
@@ -142,25 +146,6 @@ def create_employee():
         'success': True
     }
     session.commit()
-
-    return jsonify(output)
-
-
-@app.route("/employee/update", methods=['PUT'])
-def update_employee():
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    data = request.form
-    param = request.args
-
-    result = session.query(Employee)
-    for key, value in param.items():
-        result = result.filter(getattr(Employee, key) == value)
-    result.update(data)
-    session.commit()
-    output = {
-        'success': True
-    }
 
     return jsonify(output)
 
@@ -182,7 +167,26 @@ def get_employee():
     return jsonify(data)
 
 
-@app.route("/employee/delete", methods=["POST"])
+@app.route("/employee/update", methods=['PUT'])
+def update_employee():
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    data = request.form
+    param = request.args
+
+    result = session.query(Employee)
+    for key, value in param.items():
+        result = result.filter(getattr(Employee, key) == value)
+    result.update(data)
+    session.commit()
+    output = {
+        'success': True
+    }
+
+    return jsonify(output)
+
+
+@app.route("/employee/delete", methods=['DELETE'])
 def delete_employee():
     Session = sessionmaker(bind=engine)
     session = Session()

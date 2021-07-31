@@ -6,88 +6,6 @@
 	},
 	"item": [
 		{
-			"name": "Get Employees",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:5000/employee/get",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "5000",
-					"path": [
-						"employee",
-						"get"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Add Employee",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "birth_date",
-							"value": "1996-05-24",
-							"type": "text"
-						},
-						{
-							"key": "last_name",
-							"value": "Hoang",
-							"type": "text"
-						},
-						{
-							"key": "first_name",
-							"value": "Tran",
-							"type": "text"
-						},
-						{
-							"key": "photo",
-							"value": "HoangTH106.png",
-							"type": "text"
-						},
-						{
-							"key": "notes",
-							"value": "A Data Engineer fresher",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:5000/employee/create",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "5000",
-					"path": [
-						"employee",
-						"create"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Add Customer",
 			"request": {
 				"method": "POST",
@@ -108,7 +26,7 @@
 						},
 						{
 							"key": "ContactName",
-							"value": "Hoang",
+							"value": "Hoang3",
 							"type": "text"
 						},
 						{
@@ -166,6 +84,209 @@
 					"path": [
 						"customer",
 						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Customers",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "City",
+							"value": "HCM city",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/customer/update?ContactName=Hoang2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"customer",
+						"update"
+					],
+					"query": [
+						{
+							"key": "ContactName",
+							"value": "Hoang2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Customers",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/customer/delete?ContactName=Hoang",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"customer",
+						"delete"
+					],
+					"query": [
+						{
+							"key": "ContactName",
+							"value": "Hoang"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Employee",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "BirthDate",
+							"value": "1996-05-24",
+							"type": "text"
+						},
+						{
+							"key": "LastName",
+							"value": "Hoang4",
+							"type": "text"
+						},
+						{
+							"key": "FirstName",
+							"value": "Tran",
+							"type": "text"
+						},
+						{
+							"key": "Photo",
+							"value": "HoangTH106.png",
+							"type": "text"
+						},
+						{
+							"key": "Notes",
+							"value": "A Data Engineer fresher",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/employee/create",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"employee",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Employees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/employee/get",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"employee",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Employees",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "Photo",
+							"value": "Hoang02.png",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/employee/update?id=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"employee",
+						"update"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Employees",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/employee/delete?id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"employee",
+						"delete"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
 					]
 				}
 			},
