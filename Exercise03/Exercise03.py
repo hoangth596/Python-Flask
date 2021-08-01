@@ -11,6 +11,7 @@ URL = 'https://vietteltelecom.vn/api/get/sim'
 
 
 logger = logging.getLogger("SIM_CRAWLING")
+
 #create handler
 stdout_handler = logging.StreamHandler(sys.stdout)
 stdout_handler.setLevel(logging.WARNING)
@@ -39,6 +40,7 @@ def crawl_data(client_file):
 
     sim_format = sim_format.split(',')
     founded = False
+
     for i in sim_format:
         page = 1
 
@@ -60,6 +62,7 @@ def crawl_data(client_file):
     if founded:      
         os.rename(client_file, client_file[:-4] + '_found.csv')
 
+
 def crawl_sim():
     if os.path.exists('Client'):
         files = os.listdir('Client')
@@ -68,8 +71,10 @@ def crawl_sim():
         for i in files:
             crawl_data(i)
 
+
 if __name__ == '__main__':
     schedule.every().day.at("15:00").do(crawl_sim)
+
     while True:
         schedule.run_pending()
         time.sleep(1)
