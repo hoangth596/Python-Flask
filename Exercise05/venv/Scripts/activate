@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="F:\Work\Python\Assignment 8\Exercise05\venv"
+VIRTUAL_ENV="C:\Users\huyho\Downloads\Python-Flask\Exercise05\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
