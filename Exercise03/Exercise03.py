@@ -1,10 +1,10 @@
 import requests
 import pandas as pd
-from datetime import datetime
 import os
 import json
 import logging
 import sys
+import schedule
 import time
 
 URL = 'https://vietteltelecom.vn/api/get/sim'
@@ -36,37 +36,40 @@ logger.addHandler(file_handler)
 def crawl_data(client_file):
     with open(client_file) as f:
         sim_format = f.read()
-    # with open(client_file, 'a') as f:
-    #     f.write('\n')
 
     sim_format = sim_format.split(',')
     founded = False
     for i in sim_format:
         page = 1
-        while True:
-            print(i)
-            session = requests.Session()
-            session.trust_env = False
-            data = {"key_search": i, "page": page, "page_size": 50, "total_record": 1, "isdn_type": 22}
-            response = session.post(URL, data=data)
-            response = json.loads(response.text)
-            time.sleep(2)
-            data = response['data']
-            if data == []:
-                break
-            page += 1
-            df = pd.DataFrame(data)
-            sim = df[['isdn']]
-            sim.to_csv(client_file, mode='a', header=False, index=False)
-            founded = True
-            logger.info(str(i) + ' ' + 'crawled')
+
+        data = {"key_search": i, "page": page, "page_size": 50, "total_record": 1, "isdn_type": 22}
+        response = requests.post(URL, data=data)
+        
+        response = json.loads(response.text)
+        data = response['data']
+        
+        if data == []:
+            break
+        page += 1
+        df = pd.DataFrame(data)
+        sim = df[['isdn']]
+        sim.to_csv(client_file, mode='a', header=False, index=False)
+        founded = True
+        logger.info(str(i) + ' ' + 'crawled')
+    
     if founded:      
         os.rename(client_file, client_file[:-4] + '_found.csv')
 
-if __name__ == '__main__':
+def crawl_sim():
     if os.path.exists('Client'):
         files = os.listdir('Client')
         files = [('Client/' + i) for i in files if i[-10:] != '_found.csv']
         print(files)
         for i in files:
             crawl_data(i)
+
+if __name__ == '__main__':
+    schedule.every().day.at("15:00").do(crawl_sim)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
