@@ -3,7 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String
 from flask import Flask, request, jsonify
-from sqlalchemy.sql.sqltypes import DateTime
+from sqlalchemy.sql.sqltypes import Date
+from datetime import datetime
 
 
 engine = create_engine('sqlite:///test.db', echo=True)
@@ -14,12 +15,12 @@ class Customer(Base):
     __tablename__ = 'Customer'
 
     id = Column(Integer, primary_key=True)
-    CustomerName = Column(String(50))
-    ContactName = Column(String(50))
-    Address = Column(String(200))
-    City = Column(String(100))
+    CustomerName = Column(String(50), nullable=False)
+    ContactName = Column(String(50), nullable=False)
+    Address = Column(String(200), nullable=False)
+    City = Column(String(100), nullable=False)
     PostalCode = Column(String(50))
-    Country = Column(String(50))
+    Country = Column(String(50), nullable=False)
 
 
     def __repr__(self):
@@ -40,10 +41,10 @@ class Employee(Base):
     __tablename__ = 'Employee'
 
     id = Column(Integer, primary_key=True)
-    LastName = Column(String(50))
-    FirstName = Column(String(50))
-    BirthDate = Column(String(50))
-    Photo = Column(String(50))
+    LastName = Column(String(50), nullable=False)
+    FirstName = Column(String(50), nullable=False)
+    BirthDate = Column(Date, nullable=False)
+    Photo = Column(String(50), nullable=False)
     Notes = Column(String(200))
 
     def __repr__(self):
@@ -69,12 +70,17 @@ def create_customer():
     Session = sessionmaker(bind=engine)
     session = Session()
     data = request.form
-    customer = Customer(**data)
-    session.add(customer)
-    output = {
-        'success': True
-    }
-    session.commit()
+    try:
+        customer = Customer(**data)
+        session.add(customer)
+        output = {
+            'message': 'success'
+        }
+        session.commit()
+    except Exception as e:
+        output = {
+            'message': str(e)
+        }
     
     return jsonify(output)
 
@@ -103,14 +109,18 @@ def update_customer():
     data = request.form
     param = request.args
 
-    result = session.query(Customer)
-    for key, value in param.items():
-        result = result.filter(getattr(Customer, key) == value)
-    result.update(data)
-    session.commit()
-    output = {
-        'success': True
-    }
+    try:
+        id = param['id']
+        result = session.query(Customer).filter_by(id=id)
+        result.update(data)
+        session.commit()
+        output = {
+            'message': 'success'
+        }
+    except Exception as e:
+        output = {
+            'message': str(e)
+        }
 
     return jsonify(output)
 
@@ -120,19 +130,20 @@ def delete_customer():
     Session = sessionmaker(bind=engine)
     session = Session()
     param = request.args
-
-    result = session.query(Customer)
-    for key, value in param.items():
-        result = result.filter(getattr(Customer, key) == value)
-    result.delete()
-    session.commit()
-    output = {
-        'success': True
-    }
+    try:
+        id = param['id']
+        result = session.query(Customer).filter_by(id=id)
+        result.delete()
+        session.commit()
+        output = {
+            'message': 'success'
+        }
+    except Exception as e:
+        output = {
+            'message' : str(e)
+        }
 
     return jsonify(output)
-
-
 
 
 @app.route("/employee/create", methods=['POST'])
@@ -140,12 +151,20 @@ def create_employee():
     Session = sessionmaker(bind=engine)
     session = Session()
     data = request.form
-    employee = Employee(**data)
-    session.add(employee)
-    output = {
-        'success': True
-    }
-    session.commit()
+    insert_data = dict(data)
+    try:
+        if insert_data.get('BirthDate') is not None:
+            insert_data['BirthDate'] = datetime.strptime(insert_data['BirthDate'], '%Y-%m-%d').date()
+        employee = Employee(**insert_data)
+        session.add(employee)
+        output = {
+            'message': 'success'
+        }
+        session.commit()
+    except Exception as e:
+        output = {
+            'message' : str(e)
+        }
 
     return jsonify(output)
 
@@ -155,6 +174,18 @@ def get_employee():
     Session = sessionmaker(bind=engine)
     session = Session()
     param = request.args
+    param = dict(param)
+    
+    if param.get('BirthDate') is not None:
+        try:
+            param['BirthDate'] = datetime.strptime(param['BirthDate'], '%Y-%m-%d').date()
+            print(param['BirthDate'])
+        except Exception as e:
+            response = {
+                "message": str(e)
+            }
+            return jsonify(response)
+
     result = session.query(Employee)
     for key, value in param.items():
         result = result.filter(getattr(Employee, key) == value)
@@ -173,15 +204,22 @@ def update_employee():
     session = Session()
     data = request.form
     param = request.args
-
-    result = session.query(Employee)
-    for key, value in param.items():
-        result = result.filter(getattr(Employee, key) == value)
-    result.update(data)
-    session.commit()
-    output = {
-        'success': True
-    }
+    data = dict(data)
+    
+    try:
+        if data.get('BirthDate') is not None:
+            data['BirthDate'] = datetime.strptime(data['BirthDate'], '%Y-%m-%d').date()
+        id = param['id']
+        result = session.query(Employee).filter_by(id=id)
+        result.update(data)
+        session.commit()
+        output = {
+            'message' : 'success'
+        }
+    except Exception as e:
+        output = {
+            'message' : str(e)
+        }
 
     return jsonify(output)
 
@@ -192,17 +230,22 @@ def delete_employee():
     session = Session()
     param = request.args
 
-    result = session.query(Employee)
-    for key, value in param.items():
-        result = result.filter(getattr(Employee, key) == value)
-    result.delete()
-    session.commit()
-    output = {
-        'success': True
-    }
+    try:
+        id = param['id']
+        result = session.query(Employee).filter_by(id=id)
+        result.delete()
+        session.commit()
+        output = {
+            'message' : 'success'
+        }
+    except Exception as e:
+        output = {
+            'message' : str(e)
+        }
 
     return jsonify(output)
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+

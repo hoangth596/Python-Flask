@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "37257103-18a4-40c3-9bcd-d59671f58418",
+		"_postman_id": "2b8817f5-3838-49c2-a598-8d12595fb56f",
 		"name": "Exercise 5",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -99,13 +99,13 @@
 					"formdata": [
 						{
 							"key": "City",
-							"value": "HCM city",
+							"value": "HHN",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost:5000/customer/update?ContactName=Hoang2",
+					"raw": "http://localhost:5000/customer/update?id=1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -117,8 +117,8 @@
 					],
 					"query": [
 						{
-							"key": "ContactName",
-							"value": "Hoang2"
+							"key": "id",
+							"value": "1"
 						}
 					]
 				}
